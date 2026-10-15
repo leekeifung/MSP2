@@ -1,0 +1,2278 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MSP2 · Dictation (3) · 22 October 2026</title>
+
+<style>
+:root{
+  --bg:#f3f7fc;
+  --paper:#ffffff;
+  --ink:#172b46;
+  --muted:#526176;
+  --blue:#2456b8;
+  --blue-light:#edf3ff;
+  --green:#176640;
+  --green-light:#effbf3;
+  --orange:#945300;
+  --orange-light:#fff8e9;
+  --red:#a12626;
+  --line:#d6dfeb;
+  --shadow:0 8px 25px rgba(24,50,85,.06);
+}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI",
+    "Noto Sans TC","Microsoft JhengHei",sans-serif;
+  line-height:1.65;
+}
+
+button,input,select,textarea{font:inherit;color:inherit}
+
+button{
+  min-height:44px;
+  padding:9px 15px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#fff;
+  cursor:pointer;
+  font-weight:650;
+}
+
+button:hover:not(:disabled){background:var(--blue-light)}
+button:disabled{opacity:.5;cursor:not-allowed}
+
+button.primary{
+  color:#fff;
+  background:var(--blue);
+  border-color:var(--blue);
+}
+button.primary:hover:not(:disabled){background:#194696}
+
+button.danger{color:var(--red);border-color:#e6bcbc}
+button.small{padding:7px 11px;font-size:.92rem}
+
+button:focus-visible,input:focus-visible,
+select:focus-visible,textarea:focus-visible,
+summary:focus-visible{
+  outline:3px solid #d58b00;
+  outline-offset:3px;
+}
+
+input:not([type="checkbox"]),select,textarea{
+  width:100%;
+  min-height:44px;
+  padding:10px 12px;
+  border:1px solid #b9c8db;
+  border-radius:10px;
+  background:#fff;
+  font-size:16px;
+}
+
+textarea{resize:vertical}
+input[type="checkbox"]{width:19px;height:19px;accent-color:var(--blue)}
+
+h1,h2,h3,p{margin-top:0}
+h1{font-size:clamp(1.8rem,4vw,2.55rem);line-height:1.25;margin-bottom:12px}
+h2{font-size:1.55rem;margin-bottom:8px}
+h3{font-size:1.12rem;margin-bottom:8px}
+
+.wrap{max-width:1120px;margin:auto;padding:20px}
+.hero{
+  padding:30px 24px;
+  background:linear-gradient(125deg,#163f88,#176c78);
+  color:#fff;
+}
+.hero-inner{max-width:1072px;margin:auto}
+.hero p{margin-bottom:7px}
+.hero .eyebrow{font-weight:750;letter-spacing:.06em}
+.badge{
+  display:inline-block;
+  padding:4px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,.16);
+  margin-bottom:12px;
+}
+
+.dock{
+  position:sticky;
+  top:0;
+  z-index:20;
+  background:rgba(255,255,255,.98);
+  border-bottom:1px solid var(--line);
+  box-shadow:0 4px 16px rgba(24,50,85,.05);
+}
+.dock-inner{max-width:1120px;margin:auto;padding:10px 20px}
+
+.nav{
+  display:flex;
+  gap:8px;
+  overflow:auto;
+  padding:2px 2px 9px;
+}
+.nav button{white-space:nowrap;flex-shrink:0}
+.nav button.active,.subnav button.active{
+  color:#fff;
+  background:var(--blue);
+  border-color:var(--blue);
+}
+
+.audio-row{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:end;
+  gap:10px;
+}
+.audio-row label{font-size:.87rem;font-weight:700}
+.rate-box{width:105px}
+.voice-box{flex:1;min-width:170px;max-width:390px}
+.audio-row select{font-size:14px}
+.play-status{
+  color:var(--muted);
+  font-size:.9rem;
+  margin:7px 0 0;
+  min-height:1.5em;
+}
+
+.panel,.card,.note-card{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:18px;
+  box-shadow:var(--shadow);
+}
+.panel{padding:20px;margin-bottom:18px}
+
+.profile-row,.toolbar,.actions,.subnav{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:10px;
+}
+.profile-row{align-items:end}
+.profile-row .field{flex:1;min-width:180px}
+.field{display:block;margin:0}
+.field-name{display:block;font-weight:700;margin-bottom:6px}
+.check-label{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-top:14px;
+}
+.muted{color:var(--muted)}
+.small-text{font-size:.91rem}
+.notice,.warning{
+  padding:12px 15px;
+  border-radius:12px;
+  margin:12px 0;
+}
+.notice{background:var(--blue-light)}
+.warning{
+  background:var(--orange-light);
+  border:1px solid #e6cc94;
+  color:#704000;
+}
+#appMessage:empty{display:none}
+#appMessage{margin:10px 0;color:var(--blue);font-weight:650}
+
+details{
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:11px 13px;
+  margin-top:14px;
+}
+summary{cursor:pointer;font-weight:700}
+details p:last-child{margin-bottom:0}
+details .field{margin-top:12px}
+
+.subnav{margin:14px 0}
+.toolbar{margin:18px 0}
+.score{
+  padding:8px 12px;
+  border-radius:10px;
+  background:var(--blue-light);
+  font-weight:750;
+}
+
+.cards{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:16px;
+}
+
+.card{
+  padding:20px;
+  scroll-margin-top:225px;
+}
+.card.sentence{grid-column:1/-1}
+.card.playing{
+  outline:3px solid #d58b00;
+  background:#fffdf5;
+}
+.card.correct{border-color:#79ad8a}
+.card.retry{border-color:#ddb76d}
+
+.card-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:12px;
+}
+.item-number{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  font-weight:800;
+}
+.number-dot{
+  display:inline-grid;
+  place-items:center;
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  background:var(--blue-light);
+  color:var(--blue);
+}
+
+.picture{text-align:center;margin:10px 0 14px}
+.emoji{font-size:3.3rem;line-height:1.25}
+.picture-caption{font-size:.95rem;color:var(--muted);margin-top:5px}
+
+.answer-fields{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:12px;
+}
+.answer-fields.two{grid-template-columns:1fr 1fr}
+
+.answer-input{
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:18px!important;
+  line-height:1.6;
+}
+.answer-input[aria-invalid="true"]{
+  border-color:#b57412;
+  background:#fffdf6;
+}
+
+.actions{margin-top:14px}
+.feedback{min-height:1.7em;margin:12px 0 0;font-weight:700}
+.feedback.good{color:var(--green)}
+.feedback.again{color:var(--orange)}
+
+.answer-reveal{
+  background:var(--green-light);
+  border:1px solid #b6d5c0;
+  padding:12px;
+  border-radius:10px;
+  margin-top:12px;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+}
+.en{font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+.empty{
+  grid-column:1/-1;
+  padding:30px;
+  border:2px dashed var(--line);
+  border-radius:16px;
+  text-align:center;
+  background:#fff;
+}
+
+.note-list{display:grid;gap:16px;margin-top:18px}
+.note-card{padding:20px}
+.note-source{
+  padding:10px 12px;
+  background:#f4f7fb;
+  border-radius:10px;
+  overflow-wrap:anywhere;
+}
+.note-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+.note-grid .wide{grid-column:1/-1}
+.note-meta{font-size:.86rem;color:var(--muted);margin:12px 0 0}
+
+footer{
+  padding:20px 0 35px;
+  color:var(--muted);
+  font-size:.9rem;
+}
+
+.skip-link{
+  position:absolute;
+  left:12px;
+  top:-100px;
+  z-index:100;
+  background:#fff;
+  padding:10px;
+}
+.skip-link:focus{top:10px}
+
+@media(max-width:650px){
+  .wrap{padding:14px}
+  .hero{padding:24px 18px}
+  .dock-inner{padding:8px 12px}
+  .cards{grid-template-columns:1fr}
+  .card,.panel,.note-card{padding:16px}
+  .note-grid{grid-template-columns:1fr}
+  .note-grid .wide{grid-column:auto}
+  .answer-fields.two{grid-template-columns:1fr}
+  .voice-box{max-width:none}
+  .audio-row button{padding:9px 12px}
+  .card{scroll-margin-top:265px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  *{scroll-behavior:auto!important}
+}
+</style>
+</head>
+
+<body>
+<a class="skip-link" href="#main">跳到練習內容</a>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">MSP2 · Methodist School · Primary 2</div>
+    <div class="badge">Listen · Write · Check · Practise</div>
+    <h1>Dictation (3)</h1>
+    <p>LOE 2A Unit 2 + Verb Table 3 + LOE P.83</p>
+    <p>Words in Use: Weekend activities</p>
+    <p><strong>Dict. Date: <time datetime="2026-10-22">22nd October, 2026</time></strong></p>
+  </div>
+</header>
+
+<div class="dock">
+  <div class="dock-inner">
+    <nav class="nav" aria-label="練習部份">
+      <button type="button" data-page="A">Part A 句子</button>
+      <button type="button" data-page="B">Part B 動詞</button>
+      <button type="button" data-page="C">Part C 活動</button>
+      <button type="button" data-page="review" id="reviewNav">⭐ 重溫</button>
+      <button type="button" data-page="teacher">老師記錄</button>
+    </nav>
+
+    <div class="audio-row">
+      <label class="rate-box">
+        語速
+        <select id="rate">
+          <option value="0.2">0.2×</option>
+          <option value="0.3">0.3×</option>
+          <option value="0.5">0.5×</option>
+          <option value="0.6" selected>0.6×</option>
+          <option value="0.8">0.8×</option>
+          <option value="1">1×</option>
+        </select>
+      </label>
+
+      <label class="voice-box">
+        英語聲音
+        <select id="voice">
+          <option value="">預設英語聲音</option>
+        </select>
+      </label>
+
+      <button type="button" id="playAll" class="primary">▶ 全部播放</button>
+      <button type="button" id="stopSpeech" disabled>■ 停止</button>
+    </div>
+
+    <p id="playStatus" class="play-status" role="status" aria-live="polite">
+      全部播放：每一整題讀完後，停頓 3 秒才讀下一題。
+    </p>
+  </div>
+</div>
+
+<main id="main" class="wrap">
+  <section class="panel" aria-label="學生及儲存設定">
+    <div class="profile-row">
+      <label class="field">
+        <span class="field-name">目前學生代號</span>
+        <select id="studentSelect"></select>
+      </label>
+
+      <label class="field">
+        <span class="field-name">新增／切換學生代號</span>
+        <input id="newStudent"
+          maxlength="40"
+          autocomplete="off"
+          placeholder="例如：P2-01，請勿填真實姓名">
+      </label>
+
+      <button type="button" id="addStudent">建立／切換</button>
+    </div>
+
+    <label class="check-label">
+      <input type="checkbox" id="autoWrong" checked>
+      核對後，自動把錯題加入「待重溫」，供老師確認
+    </label>
+
+    <p id="saveStatus" class="muted small-text" style="margin:10px 0 0"></p>
+    <p id="storageWarning" class="warning" role="alert" hidden></p>
+    <p id="appMessage" role="status" aria-live="polite"></p>
+
+    <details>
+      <summary>使用小提示／語音與記錄</summary>
+      <ul class="small-text">
+        <li>先選學生代號，再聆聽、輸入答案和核對。</li>
+        <li>答案預設隱藏；需要時可按「顯示答案」。</li>
+        <li>句子題會核對大小寫及標點；動詞和活動詞語不區分大小寫。</li>
+        <li>直身撇號 ' 和彎身撇號 ’ 視為相同；多餘空格不會影響核對。</li>
+        <li>「全部播放」只播放目前部份／目前模式。Part B 每組兩個動詞算一題。</li>
+        <li>切換部份、學生、語速或聲音時，會停止目前播放。</li>
+        <li>極慢速時，長句會分短段朗讀；3 秒間隔仍只設於整題之間。</li>
+        <li>實際語速及發音依語音引擎而異，請老師先試聽。</li>
+        <li>部分聲音需要網絡；如沒有聲音，請改選另一個英語聲音及檢查音量。</li>
+        <li>記錄只儲存在這個瀏覽器，不會自動同步至老師或其他裝置。</li>
+        <li>請定期在「老師記錄」匯出 JSON 備份。</li>
+        <li>老師頁面沒有密碼保護。請只用學生代號，不要填寫敏感資料。</li>
+      </ul>
+    </details>
+  </section>
+
+  <section id="lessonPanel">
+    <h2 id="pageTitle"></h2>
+    <p id="pageHint" class="muted"></p>
+
+    <div id="cModes" class="subnav" aria-label="Part C 練習模式" hidden>
+      <button type="button" data-cmode="words">活動詞語 · 13 項</button>
+      <button type="button" data-cmode="unseen">自編 Unseen · 12 句</button>
+    </div>
+
+    <details id="punctuationHelp">
+      <summary>標點怎樣聽、怎樣寫？</summary>
+      <p class="small-text">
+        <strong>full stop</strong> → .
+       　<strong>comma</strong> → ,
+       　<strong>exclamation mark</strong> → !
+       　<strong>question mark</strong> → ?
+       　<strong>apostrophe</strong> → '
+      </p>
+      <p class="small-text">
+        聽到標點名稱時，寫下標點符號，不要寫出名稱。
+        所有格或縮寫會先自然朗讀，再補充 apostrophe 提示。
+      </p>
+    </details>
+
+    <div class="toolbar">
+      <button type="button" id="checkAll" class="primary">✓ 核對本頁</button>
+      <button type="button" id="clearAnswers">清空本頁作答</button>
+      <output id="score" class="score" aria-live="polite"></output>
+    </div>
+
+    <div id="cards" class="cards"></div>
+  </section>
+
+  <section id="teacherPanel" class="panel" hidden>
+    <h2 id="teacherTitle">老師記錄</h2>
+
+    <p class="muted">
+      每個學生的記錄分開儲存。
+      老師可把整題改成幾個不熟悉的英文單字／短語，下一次便只練習這些字詞。
+    </p>
+
+    <div class="notice small-text">
+      <strong>記錄方法：</strong>
+      「不熟字詞」每行一項；留空代表重練整道原題。
+      記錄內的修改會自動儲存。
+      答對一次不會自動標為已掌握，請由老師確認。
+      自動收集的錯題只是待檢查項目，不代表學生一定不認識該字詞。
+    </div>
+
+    <div class="toolbar">
+      <button type="button" id="exportCSV">匯出本生記錄 CSV</button>
+      <button type="button" id="exportJSON">備份全部學生 JSON</button>
+      <button type="button" id="importJSON">匯入 JSON 備份</button>
+      <input type="file" id="importFile" accept=".json,application/json" hidden>
+    </div>
+
+    <p class="small-text muted">
+      JSON 備份包含學生代號、作答及老師記錄，請勿上傳至公開網站。
+      匯入備份會先要求確認，然後取代本教材目前儲存的全部學生記錄。
+    </p>
+
+   ＋ 新增額外字詞／Previous Knowledge</summary>
+
+      <label class="field">
+        <span class="field-name">英文單字、短語或完整句子：每行一項</span>
+        <textarea id="manualTargets" rows="4" maxlength="5000"
+          lang="en" spellcheck="false"
+          placeholder="每行輸入一項需要重溫的英文內容"></textarea>
+      </label>
+
+      <label class="field">
+        <span class="field-name">老師備註</span>
+        <textarea id="manualMemo" rows="2" maxlength="1500"
+          placeholder="例如：能聽懂，但拼字仍需協助"></textarea>
+      </label>
+
+      <div class="actions">
+        <button type="button" id="addManual" class="primary">加入重溫記錄</button>
+      </div>
+    </details>
+
+    <p id="recordStats" class="score" style="margin-top:18px"></p>
+    <div id="noteList" class="note-list"></div>
+
+    <div class="toolbar">
+      <button type="button" id="deleteStudent" class="danger">
+        刪除此學生的本機記錄
+      </button>
+    </div>
+  </section>
+
+  <footer>
+    這是自學及老師輔導用的練習教材，不是防作弊考試系統。
+    圖像採用簡單 emoji 提示。
+    發放教材時只需分享 HTML／網頁，不要公開學生記錄備份。
+  </footer>
+
+  <noscript>
+    <p class="warning">本教材需要啟用 JavaScript，才能播放語音及核對答案。</p>
+  </noscript>
+</main>
+
+<script>
+"use strict";
+
+/* =========================================================
+   1. 內置題庫
+   ========================================================= */
+
+const APP_ID = "MSP2-Dictation3-2026-10-22";
+const STORAGE_KEY = APP_ID + "-v1";
+const RATES = ["0.2","0.3","0.5","0.6","0.8","1"];
+
+const A_TEXT = [
+  "Lunch is ready!",
+  "Jamie's dad is dancing on the grass.",
+  "Stop, Jamie!",
+  "There is a lot of rubbish around Jamie.",
+  "Look at the sign.",
+  "Jamie and his parents are having a picnic in the country park.",
+  "He is not tidy.",
+  "You must keep clean, Jamie.",
+  "We must not eat or drink.",
+  "Jamie is riding a scooter in the park.",
+  "Look at the sign. You mustn't do this.",
+  "We must line up."
+];
+
+const PART_A = A_TEXT.map((text,i) => ({
+  id:"A" + (i+1),
+  origin:"Part A · 第 " + (i+1) + " 題",
+  answers:[text],
+  kind:"sentence",
+  strict:true,
+  punctuation:true,
+  icon:"",
+  meaning:""
+}));
+
+const B_DATA = [
+  ["laugh","laughing","😂","大笑"],
+  ["pick","picking","🤏🌼","採摘"],
+  ["listen","listening","👂","聆聽"],
+  ["live","living","🏠","居住"],
+  ["talk","talking","🗣️","說話"]
+];
+
+const PART_B = B_DATA.map((row,i) => ({
+  id:"B" + (i+1),
+  origin:"Part B · 第 " + (i+1) + " 題",
+  answers:[row[0],row[1]],
+  kind:"verb",
+  strict:false,
+  punctuation:false,
+  icon:row[2],
+  meaning:row[3]
+}));
+
+/*
+  live 是「居住」的動詞。
+  用短例句提供讀音語境，避免孤立的 live 被當成另一個讀音。
+*/
+PART_B[3].speech = "I live here. I am living here.";
+PART_B[3].hint =
+  "這題會讀兩句短例句，只填表示「居住」的動詞原形及 -ing 形式。";
+
+const C_WORD_DATA = [
+  ["chat","💬","聊天"],
+  ["dance","💃","跳舞"],
+  ["have a picnic","🧺🥪","野餐"],
+  ["ride a bicycle","🚲","踏單車"],
+  ["ride a scooter","🛴","玩滑板車"],
+  ["run","🏃","跑步"],
+  ["skip","🧒🪢","跳繩"],
+  ["swim","🏊","游泳"],
+  ["take photos","📸","拍照"],
+  ["go camping","⛺","露營"],
+  ["have a barbecue","🍢🔥","燒烤"],
+  ["have a buffet meal","🍽️🥗","吃自助餐"],
+  ["read comics","📖💥","看漫畫"]
+];
+
+const C_WORDS = C_WORD_DATA.map((row,i) => ({
+  id:"CW" + (i+1),
+  origin:"Part C 詞語 · 第 " + (i+1) + " 題",
+  answers:[row[0]],
+  kind:"word",
+  strict:false,
+  punctuation:false,
+  icon:row[1],
+  meaning:row[2]
+}));
+
+/* 自編 Unseen 練習：不是課本原文或正式考試題目。 */
+const C_SENTENCE_DATA = [
+  ["I chat with my friends.","💬"],
+  ["We dance in the park.","💃"],
+  ["We have a picnic on Sunday.","🧺🥪"],
+  ["I ride a bicycle in the park.","🚲"],
+  ["Jamie is riding a scooter.","🛴"],
+  ["We run and skip on the grass.","🏃🪢"],
+  ["I swim with my dad.","🏊"],
+  ["We take photos in the country park.","📸"],
+  ["We go camping on Saturday.","⛺"],
+  ["We have a barbecue on Sunday.","🍢🔥"],
+  ["We have a buffet meal.","🍽️🥗"],
+  ["I like to read comics.","📖💥"]
+];
+
+const C_UNSEEN = C_SENTENCE_DATA.map((row,i) => ({
+  id:"CS" + (i+1),
+  origin:"Part C 自編 Unseen · 第 " + (i+1) + " 題",
+  answers:[row[0]],
+  kind:"sentence",
+  strict:true,
+  punctuation:true,
+  icon:row[1],
+  meaning:""
+}));
+
+const ALL_ITEMS = [...PART_A,...PART_B,...C_WORDS,...C_UNSEEN];
+const BY_ID = new Map(ALL_ITEMS.map(item => [item.id,item]));
+
+/* =========================================================
+   2. 共用工具及資料儲存
+   ========================================================= */
+
+const $ = id => document.getElementById(id);
+
+function element(tag,className="",text){
+  const e = document.createElement(tag);
+  if(className) e.className = className;
+  if(text !== undefined) e.textContent = text;
+  return e;
+}
+
+function button(text,handler,className=""){
+  const b = element("button",className,text);
+  b.type = "button";
+  b.addEventListener("click",handler);
+  return b;
+}
+
+function labelled(text,control){
+  const label = element("label","field");
+  label.append(element("span","field-name",text),control);
+  return label;
+}
+
+function dictionary(){ return Object.create(null); }
+function now(){ return new Date().toISOString(); }
+
+function uid(){
+  if(window.crypto && typeof window.crypto.randomUUID === "function"){
+    return window.crypto.randomUUID();
+  }
+  return "id_" + Date.now().toString(36) +
+    "_" + Math.random().toString(36).slice(2,10);
+}
+
+function hasOwn(object,key){
+  return Object.prototype.hasOwnProperty.call(object,key);
+}
+
+function notify(message){
+  $("appMessage").textContent = message;
+}
+
+function splitTargets(text){
+  return [...new Set(
+    String(text).split(/\r?\n/)
+      .map(s => s.trim().slice(0,300))
+      .filter(Boolean)
+  )].slice(0,50);
+}
+
+function newStudent(label){
+  return {
+    id:uid(),
+    label,
+    answers:dictionary(),
+    checks:dictionary(),
+    notes:[]
+  };
+}
+
+function freshDB(){
+  const first = newStudent("student-01");
+  return {
+    app:APP_ID,
+    version:1,
+    activeId:first.id,
+    settings:{rate:"0.6",voice:"",autoWrong:true},
+    students:[first]
+  };
+}
+
+function safeDate(value){
+  if(typeof value === "string" && Number.isFinite(Date.parse(value))){
+    return new Date(value).toISOString();
+  }
+  return now();
+}
+
+function cleanId(value){
+  return typeof value === "string" &&
+    /^[A-Za-z0-9_-]{1,80}$/.test(value) ? value : uid();
+}
+
+/* 匯入時只保留指定欄位；所有輸出均以 textContent／value 顯示。 */
+function cleanDB(raw){
+  if(!raw || raw.app !== APP_ID || raw.version !== 1 ||
+     !Array.isArray(raw.students) ||
+     raw.students.length < 1 || raw.students.length > 100){
+    throw new Error("這不是本教材的有效 JSON 備份。");
+  }
+
+  const seenStudentIds = new Set();
+
+  const students = raw.students.map(p => {
+    if(!p || typeof p.label !== "string" || !Array.isArray(p.notes)){
+      throw new Error("學生記錄格式不正確。");
+    }
+
+    let id = cleanId(p.id);
+    if(seenStudentIds.has(id)) id = uid();
+    seenStudentIds.add(id);
+
+    const answers = dictionary();
+    const checks = dictionary();
+
+    for(const [key,value] of Object.entries(p.answers || {})){
+      if(!/^[A-Za-z0-9_-]{1,160}$/.test(key)) continue;
+      if(["__proto__","prototype","constructor"].includes(key)) continue;
+      if(!Array.isArray(value)) continue;
+      answers[key] = value.slice(0,2).map(v =>
+        typeof v === "string" ? v.slice(0,500) : ""
+      );
+    }
+
+    for(const [key,value] of Object.entries(p.checks || {})){
+      if(!hasOwn(answers,key)) continue;
+      if(typeof value === "string" && Number.isFinite(Date.parse(value))){
+        checks[key] = safeDate(value);
+      }
+    }
+
+    const seenNoteIds = new Set();
+
+    const notes = p.notes.slice(0,1000).filter(n =>
+      n && typeof n === "object"
+    ).map(n => {
+      let noteId = cleanId(n.id);
+      if(seenNoteIds.has(noteId)) noteId = uid();
+      seenNoteIds.add(noteId);
+
+      const targets = Array.isArray(n.targets)
+        ? splitTargets(n.targets.filter(t => typeof t === "string").join("\n"))
+        : [];
+
+      return {
+        id:noteId,
+        sourceId:BY_ID.has(n.sourceId) ? n.sourceId : null,
+        targets,
+        memo:typeof n.memo === "string" ? n.memo.slice(0,1500) : "",
+        mastered:n.mastered === true,
+        createdAt:safeDate(n.createdAt),
+        updatedAt:safeDate(n.updatedAt),
+        lastWrong:typeof n.lastWrong === "string"
+          ? n.lastWrong.slice(0,1000) : "",
+        reason:typeof n.reason === "string"
+          ? n.reason.slice(0,200) : "",
+        reviewCount:Math.min(
+          1000000,
+          Math.max(0,Math.floor(Number(n.reviewCount) || 0))
+        ),
+        lastReviewAt:typeof n.lastReviewAt === "string" &&
+          Number.isFinite(Date.parse(n.lastReviewAt))
+          ? safeDate(n.lastReviewAt) : ""
+      };
+    });
+
+    return {
+      id,
+      label:p.label.trim().slice(0,40) || "student",
+      answers,
+      checks,
+      notes
+    };
+  });
+
+  const settings = raw.settings || {};
+
+  return {
+    app:APP_ID,
+    version:1,
+    activeId:students.some(s => s.id === raw.activeId)
+      ? raw.activeId : students[0].id,
+    settings:{
+      rate:RATES.includes(String(settings.rate))
+        ? String(settings.rate) : "0.6",
+      voice:typeof settings.voice === "string"
+        ? settings.voice.slice(0,2000) : "",
+      autoWrong:settings.autoWrong !== false
+    },
+    students
+  };
+}
+
+let startupWarning = "";
+
+function loadDB(){
+  try{
+    const saved = localStorage.getItem(STORAGE_KEY);
+    return saved ? cleanDB(JSON.parse(saved)) : freshDB();
+  }catch(error){
+    startupWarning =
+      "未能讀取本機舊記錄。本次先使用新記錄；請留意儲存提示，並以 JSON 備份。";
+    return freshDB();
+  }
+}
+
+let db = loadDB();
+
+function student(){
+  return db.students.find(s => s.id === db.activeId) || db.students[0];
+}
+
+function saveDB(){
+  try{
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(db));
+    $("saveStatus").textContent = "作答及老師記錄已儲存於此瀏覽器。";
+    $("storageWarning").hidden = true;
+    return true;
+  }catch(error){
+    $("saveStatus").textContent = "目前資料只保留在這個已開啟的頁面。";
+    $("storageWarning").textContent =
+      "瀏覽器未能寫入本機儲存。請勿直接關閉頁面；先到「老師記錄」匯出 JSON 備份。";
+    $("storageWarning").hidden = false;
+    return false;
+  }
+}
+
+function timeText(iso){
+  if(!iso) return "—";
+  const date = new Date(iso);
+  return Number.isNaN(date.getTime())
+    ? "—" : date.toLocaleString("zh-HK",{hour12:false});
+}
+
+/* =========================================================
+   3. 答案核對
+   ========================================================= */
+
+function normalise(value,strict){
+  let text = String(value || "")
+    .replace(/[‘’ʼ]/g,"'")
+    .replace(/\s+/g," ")
+    .trim()
+    .replace(/\s+([,.!?;:])/g,"$1")
+    .replace(/([,.!?;:])(?=[A-Za-z])/g,"$1 ");
+
+  return strict ? text : text.toLowerCase();
+}
+
+function wordShape(value){
+  return normalise(value,false)
+    .replace(/'/g,"")
+    .replace(/[^a-z0-9]+/g," ")
+    .replace(/\s+/g," ")
+    .trim();
+}
+
+function valuesFor(item){
+  const values = student().answers[item.id] || [];
+  return item.answers.map((answer,i) => values[i] || "");
+}
+
+function grade(item){
+  const values = valuesFor(item);
+
+  const flags = item.answers.map((expected,i) => {
+    if(!values[i].trim()) return "blank";
+
+    if(normalise(values[i],item.strict) ===
+       normalise(expected,item.strict)){
+      return "ok";
+    }
+
+    if(wordShape(values[i]) === wordShape(expected)){
+      return "format";
+    }
+
+    return "wrong";
+  });
+
+  return {
+    flags,
+    empty:flags.every(flag => flag === "blank"),
+    correct:flags.every(flag => flag === "ok")
+  };
+}
+
+function issueText(result){
+  if(result.flags.includes("wrong")) return "拼字、漏字或詞序需要檢查";
+  if(result.flags.includes("blank")) return "答案尚未完整";
+  return "大小寫或標點需要檢查";
+}
+
+/* =========================================================
+   4. 老師記錄與針對性重溫
+   ========================================================= */
+
+function noteFor(item){
+  if(item.noteId){
+    return student().notes.find(n => n.id === item.noteId);
+  }
+  const sourceId = item.sourceId || item.id;
+  return student().notes.find(n => n.sourceId === sourceId);
+}
+
+function makeNote(sourceId,targets=[],memo=""){
+  const stamp = now();
+  return {
+    id:uid(),
+    sourceId,
+    targets,
+    memo,
+    mastered:false,
+    createdAt:stamp,
+    updatedAt:stamp,
+    lastWrong:"",
+    reason:"",
+    reviewCount:0,
+    lastReviewAt:""
+  };
+}
+
+function ensureNote(item){
+  let note = noteFor(item);
+
+  if(!note){
+    const sourceId = item.sourceId || item.id;
+    note = makeNote(BY_ID.has(sourceId) ? sourceId : null);
+    student().notes.push(note);
+  }
+
+  note.mastered = false;
+  note.updatedAt = now();
+  return note;
+}
+
+function clearReviewAnswers(noteId){
+  const prefix = "R_" + noteId + "_";
+
+  for(const key of Object.keys(student().answers)){
+    if(key.startsWith(prefix)){
+      delete student().answers[key];
+      delete student().checks[key];
+    }
+  }
+}
+
+function itemsForNote(note){
+  const original = BY_ID.get(note.sourceId);
+
+  if(note.targets.length){
+    return note.targets.map((target,i) => {
+      const sentence = /[.!?]$/.test(target.trim());
+
+      const item = {
+        id:"R_" + note.id + "_" + i,
+        sourceId:note.sourceId,
+        noteId:note.id,
+        origin:original
+          ? original.origin + " · 指定字詞"
+          : "老師補充字詞",
+        answers:[target],
+        kind:sentence ? "sentence" : "word",
+        strict:sentence,
+        punctuation:sentence || Boolean(original && original.punctuation),
+        icon:original && original.icon ? original.icon : "⭐",
+        meaning:""
+      };
+
+      if(normalise(target,false) === "live"){
+        item.speech = "I live here.";
+        item.hint = "聽短例句，只填表示「居住」的動詞。";
+      }
+
+      return item;
+    });
+  }
+
+  if(original){
+    return [{
+      ...original,
+      id:"R_" + note.id + "_full",
+      sourceId:original.id,
+      noteId:note.id,
+      origin:original.origin + " · 整題重溫"
+    }];
+  }
+
+  return [];
+}
+
+function reviewItems(){
+  return student().notes
+    .filter(note => !note.mastered)
+    .flatMap(itemsForNote);
+}
+
+function sourceText(note){
+  const original = BY_ID.get(note.sourceId);
+  return original
+    ? original.answers.join(" | ")
+    : note.targets.join(" / ");
+}
+
+/* =========================================================
+   5. 語音：讀完一整題後，才開始等待 3 秒
+   ========================================================= */
+
+const HAS_SPEECH =
+  "speechSynthesis" in window &&
+  "SpeechSynthesisUtterance" in window;
+
+const synth = HAS_SPEECH ? window.speechSynthesis : null;
+
+let englishVoices = [];
+let speechGeneration = 0;
+let gapTimer = null;
+let activeUtterance = null;
+let speechActive = false;
+
+function voicePriority(voice){
+  return (/^en[-_]GB$/i.test(voice.lang) ? 100 : 0) +
+    (voice.localService ? 10 : 0) +
+    (voice.default ? 1 : 0);
+}
+
+function populateVoices(){
+  const select = $("voice");
+
+  if(!HAS_SPEECH){
+    select.replaceChildren();
+    const option = element("option","","此瀏覽器沒有語音功能");
+    option.value = "";
+    select.append(option);
+    select.disabled = true;
+    $("rate").disabled = true;
+    return;
+  }
+
+  const wanted = db.settings.voice || select.value;
+
+  try{
+    englishVoices = synth.getVoices()
+      .filter(v => /^en(?:[-_]|$)/i.test(v.lang))
+      .sort((a,b) =>
+        voicePriority(b) - voicePriority(a) ||
+        a.name.localeCompare(b.name)
+      );
+  }catch(error){
+    englishVoices = [];
+  }
+
+  select.replaceChildren();
+
+  if(!englishVoices.length){
+    const option = element("option","","預設英語聲音／等候載入");
+    option.value = "";
+    select.append(option);
+    return;
+  }
+
+  for(const voice of englishVoices){
+    const label = voice.name + " · " + voice.lang +
+      (voice.localService ? " · 本機" : " · 遠端服務");
+
+    const option = element("option","",label);
+    option.value = voice.voiceURI;
+    select.append(option);
+  }
+
+  select.value = englishVoices.some(v => v.voiceURI === wanted)
+    ? wanted : englishVoices[0].voiceURI;
+}
+
+function withPunctuation(text){
+  const punctuationNames = {
+    ".":". Full stop. ",
+    ",":", comma, ",
+    "!":"! Exclamation mark. ",
+    "?":"? Question mark. ",
+    ";":"; semicolon, ",
+    ":":": colon, "
+  };
+
+  let spoken = text.replace(/[.,!?;:]/g,mark => punctuationNames[mark]);
+
+  const apostropheWords = [...new Set(
+    text.match(/\b[A-Za-z]+['’][A-Za-z]+\b/g) || []
+  )];
+
+  for(const rawWord of apostropheWords){
+    const word = rawWord.replace(/’/g,"'");
+    const suffix = word.split("'")[1];
+
+    if(suffix.length === 1){
+      spoken += " " + word +
+        ": apostrophe before the letter " + suffix.toUpperCase() + ".";
+    }else{
+      spoken += " " + word + ": this word contains an apostrophe.";
+    }
+  }
+
+  return spoken;
+}
+
+function spokenText(item){
+  if(item.speech) return item.speech;
+
+  if(item.answers.length > 1){
+    return item.answers.join(", ") + ".";
+  }
+
+  return item.punctuation
+    ? withPunctuation(item.answers[0])
+    : item.answers[0];
+}
+
+/*
+  極慢速時把較長文字分短段。
+  段與段之間不額外加入 3 秒；
+  只有整題所有段落讀完後，才等待 3 秒。
+*/
+function speechChunks(text,rate){
+  const pieces = text.match(/[^.!?]+[.!?]?/g) || [text];
+  const limit = rate <= 0.3 ? 6 : 24;
+  const chunks = [];
+
+  for(const piece of pieces){
+    const words = piece.trim().split(/\s+/).filter(Boolean);
+
+    for(let i=0;i<words.length;i+=limit){
+      chunks.push(words.slice(i,i+limit).join(" "));
+    }
+  }
+
+  return chunks.filter(Boolean);
+}
+
+function clearPlayingHighlight(){
+  for(const ref of cardRefs.values()){
+    ref.card.classList.remove("playing");
+  }
+}
+
+function stopSpeech(message="已停止播放。"){
+  speechGeneration++;
+
+  if(gapTimer !== null){
+    clearTimeout(gapTimer);
+    gapTimer = null;
+  }
+
+  speechActive = false;
+  activeUtterance = null;
+
+  if(synth){
+    try{ synth.cancel(); }catch(error){}
+  }
+
+  clearPlayingHighlight();
+  $("stopSpeech").disabled = true;
+
+  if(message !== null){
+    $("playStatus").textContent = message;
+  }
+}
+
+function playItems(items){
+  if(!HAS_SPEECH){
+    notify("此瀏覽器沒有語音朗讀功能，請改用支援語音功能的瀏覽器。");
+    return;
+  }
+
+  if(!items.length){
+    notify("目前沒有可播放的題目。");
+    return;
+  }
+
+  stopSpeech(null);
+
+  const generation = speechGeneration;
+  const list = items.slice();
+  const rate = Number($("rate").value);
+  const selectedVoice = englishVoices.find(
+    voice => voice.voiceURI === $("voice").value
+  );
+
+  let itemIndex = 0;
+  speechActive = true;
+  $("stopSpeech").disabled = false;
+
+  try{
+    if(synth.paused) synth.resume();
+  }catch(error){}
+
+  function finish(){
+    if(generation !== speechGeneration) return;
+    speechActive = false;
+    activeUtterance = null;
+    clearPlayingHighlight();
+    $("stopSpeech").disabled = true;
+    $("playStatus").textContent = "播放完成。";
+  }
+
+  function playCurrentItem(){
+    if(generation !== speechGeneration) return;
+
+    const item = list[itemIndex];
+    const chunks = speechChunks(spokenText(item),rate);
+    let chunkIndex = 0;
+
+    clearPlayingHighlight();
+
+    const ref = cardRefs.get(item.id);
+
+    if(ref){
+      ref.card.classList.add("playing");
+
+      const reduceMotion = window.matchMedia &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      ref.card.scrollIntoView({
+        block:"nearest",
+        behavior:reduceMotion ? "auto" : "smooth"
+      });
+    }
+
+    $("playStatus").textContent =
+      "正在播放：" + item.origin +
+      "（" + (itemIndex+1) + " / " + list.length + "）";
+
+    function speakNextChunk(){
+      if(generation !== speechGeneration) return;
+
+      if(chunkIndex >= chunks.length){
+        activeUtterance = null;
+
+        if(itemIndex >= list.length-1){
+          finish();
+        }else{
+          $("playStatus").textContent =
+            "本題已讀完，停頓 3 秒後播放下一題……";
+
+          gapTimer = setTimeout(() => {
+            gapTimer = null;
+            if(generation !== speechGeneration) return;
+            itemIndex++;
+            playCurrentItem();
+          },3000);
+        }
+        return;
+      }
+
+      const utterance = new SpeechSynthesisUtterance(chunks[chunkIndex]);
+
+      utterance.lang = selectedVoice
+        ? selectedVoice.lang.replace("_","-") : "en-GB";
+
+      if(selectedVoice) utterance.voice = selectedVoice;
+      utterance.rate = rate;
+      utterance.pitch = 1;
+      utterance.volume = 1;
+
+      let settled = false;
+      activeUtterance = utterance;
+
+      utterance.onend = () => {
+        if(settled || generation !== speechGeneration) return;
+        settled = true;
+        chunkIndex++;
+        speakNextChunk();
+      };
+
+      utterance.onerror = event => {
+        if(settled || generation !== speechGeneration) return;
+        settled = true;
+
+        stopSpeech(
+          "語音未能播放（" + (event.error || "未知原因") +
+          "）。請改選另一個英語聲音，或檢查語音服務及音量。"
+        );
+      };
+
+      try{
+        synth.speak(utterance);
+      }catch(error){
+        stopSpeech("語音未能啟動，請改選另一個聲音後再試。");
+      }
+    }
+
+    speakNextChunk();
+  }
+
+  playCurrentItem();
+}
+
+/* =========================================================
+   6. 練習頁面
+   ========================================================= */
+
+let page = "A";
+let cMode = "words";
+let visibleItems = [];
+const cardRefs = new Map();
+
+function currentItems(){
+  if(page === "A") return PART_A;
+  if(page === "B") return PART_B;
+  if(page === "C") return cMode === "words" ? C_WORDS : C_UNSEEN;
+  if(page === "review") return reviewItems();
+  return [];
+}
+
+function renderProfiles(){
+  const select = $("studentSelect");
+  select.replaceChildren();
+
+  for(const s of db.students){
+    const option = element("option","",s.label);
+    option.value = s.id;
+    select.append(option);
+  }
+
+  select.value = db.activeId;
+}
+
+function updateRecordSummary(){
+  const notes = student().notes;
+  const pending = notes.filter(n => !n.mastered).length;
+  const mastered = notes.length - pending;
+
+  $("reviewNav").textContent =
+    "⭐ 重溫（" + reviewItems().length + " 題）";
+
+  $("recordStats").textContent =
+    "記錄 " + notes.length + " 項｜待重溫 " + pending +
+    " 項｜已掌握 " + mastered + " 項";
+}
+
+function updateScore(){
+  let checked = 0;
+  let correct = 0;
+
+  for(const item of visibleItems){
+    if(!hasOwn(student().checks,item.id)) continue;
+    const result = grade(item);
+    if(result.empty) continue;
+    checked++;
+    if(result.correct) correct++;
+  }
+
+  const text =
+    "已核對 " + checked + " / " + visibleItems.length +
+    " 題　完全正確：" + correct + " 題";
+
+  if($("score").textContent !== text){
+    $("score").textContent = text;
+  }
+}
+
+function refreshStar(item){
+  const ref = cardRefs.get(item.id);
+  if(!ref || !ref.star) return;
+
+  const note = noteFor(item);
+
+  ref.star.textContent = note && !note.mastered
+    ? "★ 已加入重溫" : "☆ 加入重溫";
+}
+
+function paintResult(item){
+  const ref = cardRefs.get(item.id);
+  if(!ref) return;
+
+  ref.card.classList.remove("correct","retry");
+  ref.feedback.className = "feedback";
+
+  for(const input of ref.inputs){
+    input.setAttribute("aria-invalid","false");
+  }
+
+  if(!hasOwn(student().checks,item.id)){
+    ref.feedback.textContent = "";
+    refreshStar(item);
+    return;
+  }
+
+  const result = grade(item);
+
+  if(result.empty){
+    ref.feedback.textContent = "先聽發音，再填寫答案。";
+    return;
+  }
+
+  result.flags.forEach((flag,i) => {
+    ref.inputs[i].setAttribute(
+      "aria-invalid",
+      flag !== "ok" ? "true" : "false"
+    );
+  });
+
+  if(result.correct){
+    ref.card.classList.add("correct");
+    ref.feedback.classList.add("good");
+    ref.feedback.textContent = "✅ 答對了！";
+  }else{
+    ref.card.classList.add("retry");
+    ref.feedback.classList.add("again");
+
+    if(item.answers.length === 2){
+      const labels = ["原形","-ing 形式"];
+      const messages = {
+        ok:"✅ 正確",
+        blank:"尚未填寫",
+        format:"檢查標點或多餘文字",
+        wrong:"再檢查拼字"
+      };
+
+      ref.feedback.textContent = result.flags.map((flag,i) =>
+        labels[i] + "：" + messages[flag]
+      ).join("；");
+    }else if(result.flags[0] === "format"){
+      ref.feedback.textContent = item.strict
+        ? "✏️ 字詞大致正確，請再檢查大小寫和標點。"
+        : "✏️ 請檢查標點；詞語題不用加句末標點。";
+    }else{
+      ref.feedback.textContent =
+        "✏️ 再聽一次，檢查拼字、漏字及詞序。需要時可顯示答案。";
+    }
+  }
+
+  refreshStar(item);
+}
+
+function checkItem(item,save=true){
+  const result = grade(item);
+  const ref = cardRefs.get(item.id);
+
+  if(result.empty){
+    if(ref){
+      ref.feedback.className = "feedback again";
+      ref.feedback.textContent = "請先填寫答案，再核對。";
+    }
+    return;
+  }
+
+  student().checks[item.id] = now();
+
+  if(item.noteId){
+    const note = noteFor(item);
+
+    if(note){
+      note.reviewCount++;
+      note.lastReviewAt = now();
+      note.updatedAt = now();
+
+      if(!result.correct){
+        note.mastered = false;
+        note.lastWrong = valuesFor(item)
+          .map(v => v || "[未填]").join(" | ");
+        note.reason = issueText(result);
+      }
+    }
+  }else if(!result.correct && db.settings.autoWrong){
+    const note = ensureNote(item);
+    note.lastWrong = valuesFor(item)
+      .map(v => v || "[未填]").join(" | ");
+    note.reason = issueText(result);
+  }
+
+  paintResult(item);
+  updateScore();
+  updateRecordSummary();
+
+  if(save) saveDB();
+}
+
+function createCard(item,index){
+  const card = element(
+    "article",
+    "card" + (item.kind === "sentence" ? " sentence" : "")
+  );
+
+  const head = element("div","card-head");
+  const itemLabel = element("div","item-number");
+  itemLabel.append(
+    element("span","number-dot",String(index+1)),
+    element("span","","第 " + (index+1) + " 題")
+  );
+
+  const listen = button("🔊 聆聽",() => playItems([item]),"primary");
+  listen.disabled = !HAS_SPEECH;
+  head.append(itemLabel,listen);
+  card.append(head);
+
+  if(page === "review"){
+    card.append(element("p","small-text muted",item.origin));
+  }
+
+  if(item.icon){
+    const picture = element("div","picture");
+    const emoji = element("div","emoji",item.icon);
+    emoji.setAttribute("aria-hidden","true");
+    picture.append(emoji);
+
+    if(item.meaning){
+      picture.append(element("div","picture-caption",item.meaning));
+    }
+
+    card.append(picture);
+  }
+
+  if(item.hint){
+    card.append(element("p","notice small-text",item.hint));
+  }
+
+  const fields = element(
+    "div",
+    "answer-fields" + (item.answers.length === 2 ? " two" : "")
+  );
+
+  const inputs = [];
+  const savedValues = valuesFor(item);
+  const feedbackId = "feedback-" + index;
+
+  item.answers.forEach((expected,fieldIndex) => {
+    const input = element(
+      item.kind === "sentence" ? "textarea" : "input",
+      "answer-input"
+    );
+
+    if(input.tagName === "INPUT") input.type = "text";
+    else input.rows = 2;
+
+    input.value = savedValues[fieldIndex];
+    input.maxLength = 500;
+    input.lang = "en";
+    input.spellcheck = false;
+    input.autocomplete = "off";
+    input.setAttribute("autocorrect","off");
+    input.setAttribute("autocapitalize","off");
+    input.setAttribute("aria-describedby",feedbackId);
+    input.setAttribute("aria-invalid","false");
+
+    const fieldName = item.answers.length === 2
+      ? (fieldIndex === 0 ? "動詞原形" : "-ing 形式")
+      : "我的答案";
+
+    input.placeholder = "聽完後，在這裡輸入答案";
+
+    input.addEventListener("input",() => {
+      const values = valuesFor(item);
+      values[fieldIndex] = input.value;
+      student().answers[item.id] = values;
+
+      delete student().checks[item.id];
+
+      paintResult(item);
+      updateScore();
+      saveDB();
+    });
+
+    inputs.push(input);
+    fields.append(labelled(fieldName,input));
+  });
+
+  card.append(fields);
+
+  const actions = element("div","actions");
+
+  actions.append(button("✓ 核對",() => checkItem(item),"primary"));
+
+  const answerBox = element(
+    "div","answer-reveal en",
+    "正確答案：\n" + item.answers.join(" | ")
+  );
+  answerBox.lang = "en";
+  answerBox.hidden = true;
+
+  const showAnswer = button("顯示答案",() => {
+    answerBox.hidden = !answerBox.hidden;
+    showAnswer.textContent = answerBox.hidden ? "顯示答案" : "隱藏答案";
+    showAnswer.setAttribute("aria-expanded",String(!answerBox.hidden));
+  });
+  showAnswer.setAttribute("aria-expanded","false");
+  actions.append(showAnswer);
+
+  let star = null;
+
+  if(!item.noteId){
+    star = button("☆ 加入重溫",() => {
+      ensureNote(item);
+      saveDB();
+      refreshStar(item);
+      updateRecordSummary();
+      notify("已加入待重溫。老師可再指定需要練習的字詞。");
+    });
+    actions.append(star);
+  }
+
+  const feedback = element("p","feedback");
+  feedback.id = feedbackId;
+  feedback.setAttribute("role","status");
+  feedback.setAttribute("aria-live","polite");
+
+  card.append(actions,feedback,answerBox);
+
+  if(!item.noteId){
+    const details = element("details");
+    details.append(element("summary","","老師：記錄不熟字詞"));
+
+    const existing = noteFor(item);
+
+    const targets = element("textarea");
+    targets.rows = 3;
+    targets.maxLength = 5000;
+    targets.lang = "en";
+    targets.spellcheck = false;
+    targets.placeholder = "每行一個英文單字／短語；留空即重練整題";
+    targets.value = existing ? existing.targets.join("\n") : "";
+
+    const memo = element("textarea");
+    memo.rows = 2;
+    memo.maxLength = 1500;
+    memo.placeholder = "例如：能聽懂意思，但未能獨立拼寫";
+    memo.value = existing ? existing.memo : "";
+
+    details.append(
+      labelled("不熟字詞：每行一項",targets),
+      labelled("老師備註",memo)
+    );
+
+    const saveRow = element("div","actions");
+
+    saveRow.append(button("儲存並加入重溫",() => {
+      const note = ensureNote(item);
+      note.targets = splitTargets(targets.value);
+      note.memo = memo.value.trim();
+      note.updatedAt = now();
+
+      clearReviewAnswers(note.id);
+      saveDB();
+      refreshStar(item);
+      updateRecordSummary();
+
+      notify(
+        note.targets.length
+          ? "已儲存指定字詞；到「⭐ 重溫」便可針對練習。"
+          : "已儲存；到「⭐ 重溫」會重練整道原題。"
+      );
+    },"primary"));
+
+    details.append(saveRow);
+    card.append(details);
+  }
+
+  cardRefs.set(item.id,{card,inputs,feedback,star});
+  paintResult(item);
+
+  return card;
+}
+
+function renderPage(){
+  cardRefs.clear();
+  $("cards").replaceChildren();
+
+  document.querySelectorAll("[data-page]").forEach(b => {
+    const active = b.dataset.page === page;
+    b.classList.toggle("active",active);
+    b.setAttribute("aria-pressed",String(active));
+  });
+
+  $("lessonPanel").hidden = page === "teacher";
+  $("teacherPanel").hidden = page !== "teacher";
+
+  visibleItems = currentItems();
+
+  $("playAll").disabled =
+    !HAS_SPEECH || page === "teacher" || visibleItems.length === 0;
+
+  if(page === "teacher"){
+    renderTeacher();
+    updateRecordSummary();
+    return;
+  }
+
+  $("cModes").hidden = page !== "C";
+
+  document.querySelectorAll("[data-cmode]").forEach(b => {
+    const active = b.dataset.cmode === cMode;
+    b.classList.toggle("active",active);
+    b.setAttribute("aria-pressed",String(active));
+  });
+
+  const titles = {
+    A:"Part A：句子默寫",
+    B:"Part B：Verb Table 3",
+    C:cMode === "words"
+      ? "Part C：Weekend activities"
+      : "Part C：自編 Unseen 練習",
+    review:"⭐ 針對性重溫"
+  };
+
+  const hints = {
+    A:"12 題。請聆聽句子及標點提示，寫下完整句子。大小寫、標點和 apostrophe 都要留意。",
+    B:"5 組動詞。每題分開填原形及 -ing 形式。全部播放時，整組讀完後停頓 3 秒。",
+    C:cMode === "words"
+      ? "13 項活動詞語。聽英文、看圖像提示，再輸入詞語。詞語題不用加句末標點。"
+      : "以下 12 句為自編練習，使用活動詞語作延伸；不是課本原文或正式默書題目。句子會讀出標點。",
+    review:"有指定字詞時，只練那些字詞；沒有指定則重練原題。答對不會自動移除，請由老師確認已掌握。"
+  };
+
+  $("pageTitle").textContent = titles[page];
+  $("pageHint").textContent = hints[page];
+
+  $("punctuationHelp").hidden =
+    !visibleItems.some(item => item.punctuation);
+
+  $("checkAll").disabled = visibleItems.length === 0;
+  $("clearAnswers").disabled = visibleItems.length === 0;
+
+  if(!visibleItems.length){
+    $("cards").append(element(
+      "div","empty",
+      "目前沒有待重溫題目。可在各題按「加入重溫」，或由老師新增字詞。"
+    ));
+  }else{
+    visibleItems.forEach((item,index) => {
+      $("cards").append(createCard(item,index));
+    });
+  }
+
+  updateScore();
+  updateRecordSummary();
+}
+
+function switchPage(next){
+  stopSpeech("已切換部份；按「聆聽」或「全部播放」開始。");
+  page = next;
+  renderPage();
+}
+
+/* =========================================================
+   7. 老師記錄頁
+   ========================================================= */
+
+function noteMeta(note){
+  return "建立：" + timeText(note.createdAt) +
+    "｜更新：" + timeText(note.updatedAt) +
+    "｜重溫核對：" + note.reviewCount + " 次" +
+    "｜最近重溫：" + timeText(note.lastReviewAt);
+}
+
+function renderTeacher(){
+  $("teacherTitle").textContent = "老師記錄 · " + student().label;
+
+  const list = $("noteList");
+  list.replaceChildren();
+
+  if(!student().notes.length){
+    list.append(element(
+      "div","empty",
+      "暫時沒有記錄。可在題目下方記錄不熟字詞，或新增額外詞語。"
+    ));
+    updateRecordSummary();
+    return;
+  }
+
+  for(const note of student().notes.slice().reverse()){
+    const original = BY_ID.get(note.sourceId);
+    const card = element("article","note-card");
+
+    card.append(element(
+      "h3","",
+      original ? original.origin : "老師補充／Previous Knowledge"
+    ));
+
+    card.append(element(
+      "p","note-source en",
+      original
+        ? "原題：" + original.answers.join(" | ")
+        : "補充記錄：請在下方指定英文練習內容"
+    ));
+
+    if(note.lastWrong){
+      card.append(element(
+        "p","small-text",
+        "最近錯答：" + note.lastWrong +
+        (note.reason ? "（" + note.reason + "）" : "")
+      ));
+    }
+
+    const grid = element("div","note-grid");
+
+    const targets = element("textarea");
+    targets.rows = 4;
+    targets.maxLength = 5000;
+    targets.lang = "en";
+    targets.spellcheck = false;
+    targets.value = note.targets.join("\n");
+    targets.placeholder = original
+      ? "每行一項；留空代表整題重溫"
+      : "每行輸入一個英文單字、短語或句子";
+
+    const memo = element("textarea");
+    memo.rows = 4;
+    memo.maxLength = 1500;
+    memo.value = note.memo;
+
+    const status = element("select");
+
+    for(const [value,text] of [
+      ["pending","需要重溫"],
+      ["mastered","老師確認：已掌握"]
+    ]){
+      const option = element("option","",text);
+      option.value = value;
+      status.append(option);
+    }
+
+    status.value = note.mastered ? "mastered" : "pending";
+
+    grid.append(
+      labelled("不熟字詞：每行一項",targets),
+      labelled("老師備註",memo),
+      labelled("學習狀態",status)
+    );
+
+    const meta = element("p","note-meta",noteMeta(note));
+
+    function commit(){
+      note.updatedAt = now();
+      saveDB();
+      meta.textContent = noteMeta(note);
+      updateRecordSummary();
+    }
+
+    targets.addEventListener("input",() => {
+      if(speechActive) stopSpeech("字詞已修改，請重新播放。");
+      note.targets = splitTargets(targets.value);
+      clearReviewAnswers(note.id);
+      commit();
+    });
+
+    memo.addEventListener("input",() => {
+      note.memo = memo.value;
+      commit();
+    });
+
+    status.addEventListener("change",() => {
+      note.mastered = status.value === "mastered";
+      commit();
+    });
+
+    const actions = element("div","actions");
+
+    const preview = button("🔊 試聽重溫內容",() => {
+      const items = itemsForNote(note);
+      if(items.length) playItems(items);
+      else notify("請先輸入需要練習的英文內容。");
+    });
+    preview.disabled = !HAS_SPEECH;
+
+    actions.append(
+      preview,
+      button("刪除此記錄",() => {
+        if(!confirm("刪除此項老師記錄？原題及原題作答會保留。")) return;
+
+        stopSpeech();
+        clearReviewAnswers(note.id);
+        student().notes = student().notes.filter(n => n.id !== note.id);
+        saveDB();
+        renderTeacher();
+        updateRecordSummary();
+      },"danger")
+    );
+
+    card.append(grid,actions,meta);
+    list.append(card);
+  }
+
+  updateRecordSummary();
+}
+
+/* =========================================================
+   8. 匯出、備份及匯入
+   ========================================================= */
+
+function downloadFile(filename,text,mime){
+  const blob = new Blob([text],{type:mime});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+
+  a.href = url;
+  a.download = filename;
+  document.body.append(a);
+  a.click();
+  a.remove();
+
+  setTimeout(() => URL.revokeObjectURL(url),10000);
+}
+
+/* 避免試算表把使用者文字當作公式執行。 */
+function csvCell(value){
+  let text = String(value == null ? "" : value);
+
+  if(/^\s*[=+\-@]/.test(text) || /^[\t\r]/.test(text)){
+    text = "'" + text;
+  }
+
+  return '"' + text.replace(/"/g,'""') + '"';
+}
+
+function exportCSV(){
+  const headers = [
+    "學生代號",
+    "來源",
+    "原題／補充內容",
+    "指定重溫字詞",
+    "老師備註",
+    "狀態",
+    "最近錯答",
+    "待檢查項目",
+    "建立時間",
+    "更新時間",
+    "重溫核對次數",
+    "最近重溫時間"
+  ];
+
+  const rows = student().notes.map(note => {
+    const original = BY_ID.get(note.sourceId);
+
+    return [
+      student().label,
+      original ? original.origin : "Previous Knowledge",
+      sourceText(note),
+      note.targets.length ? note.targets.join("\n") : "整題重溫",
+      note.memo,
+      note.mastered ? "已掌握" : "需要重溫",
+      note.lastWrong,
+      note.reason,
+      note.createdAt,
+      note.updatedAt,
+      note.reviewCount,
+      note.lastReviewAt
+    ];
+  });
+
+  const csv = "\uFEFF" +
+    [headers,...rows].map(row => row.map(csvCell).join(",")).join("\r\n");
+
+  downloadFile(
+    "MSP2-Dictation3-Teacher-Records.csv",
+    csv,
+    "text/csv;charset=utf-8"
+  );
+
+  notify("已匯出目前學生的老師記錄 CSV。");
+}
+
+/* =========================================================
+   9. 介面事件
+   ========================================================= */
+
+document.querySelectorAll("[data-page]").forEach(b => {
+  b.addEventListener("click",() => switchPage(b.dataset.page));
+});
+
+document.querySelectorAll("[data-cmode]").forEach(b => {
+  b.addEventListener("click",() => {
+    stopSpeech("已切換 Part C 模式。");
+    cMode = b.dataset.cmode;
+    renderPage();
+  });
+});
+
+$("playAll").addEventListener("click",() => playItems(visibleItems));
+$("stopSpeech").addEventListener("click",() => stopSpeech());
+
+$("rate").addEventListener("change",() => {
+  stopSpeech("語速已更改，請重新播放。");
+  db.settings.rate = $("rate").value;
+  saveDB();
+});
+
+$("voice").addEventListener("change",() => {
+  stopSpeech("聲音已更改，請重新播放。");
+  db.settings.voice = $("voice").value;
+  saveDB();
+});
+
+$("autoWrong").addEventListener("change",() => {
+  db.settings.autoWrong = $("autoWrong").checked;
+  saveDB();
+});
+
+$("studentSelect").addEventListener("change",() => {
+  stopSpeech("已切換學生。");
+  db.activeId = $("studentSelect").value;
+  saveDB();
+  renderPage();
+});
+
+function addOrSwitchStudent(){
+  const label = $("newStudent").value.trim().slice(0,40);
+
+  if(!label){
+    notify("請先輸入學生代號。");
+    $("newStudent").focus();
+    return;
+  }
+
+  let target = db.students.find(
+    s => s.label.toLowerCase() === label.toLowerCase()
+  );
+
+  if(!target){
+    if(db.students.length >= 100){
+      notify("本機已達 100 個學生代號，請先備份及整理記錄。");
+      return;
+    }
+
+    target = newStudent(label);
+    db.students.push(target);
+  }
+
+  stopSpeech("已切換學生。");
+  db.activeId = target.id;
+  $("newStudent").value = "";
+
+  saveDB();
+  renderProfiles();
+  renderPage();
+  notify("目前學生：" + target.label);
+}
+
+$("addStudent").addEventListener("click",addOrSwitchStudent);
+
+$("newStudent").addEventListener("keydown",event => {
+  if(event.key === "Enter"){
+    event.preventDefault();
+    addOrSwitchStudent();
+  }
+});
+
+$("checkAll").addEventListener("click",() => {
+  for(const item of visibleItems){
+    checkItem(item,false);
+  }
+  saveDB();
+  updateScore();
+  updateRecordSummary();
+});
+
+$("clearAnswers").addEventListener("click",() => {
+  if(!confirm(
+    "只清空本頁作答及核對結果，保留老師記錄及待重溫清單。確定？"
+  )) return;
+
+  stopSpeech();
+
+  for(const item of visibleItems){
+    delete student().answers[item.id];
+    delete student().checks[item.id];
+  }
+
+  saveDB();
+  renderPage();
+  notify("已清空本頁作答；老師記錄仍然保留。");
+});
+
+$("addManual").addEventListener("click",() => {
+  const targets = splitTargets($("manualTargets").value);
+
+  if(!targets.length){
+    notify("請先輸入至少一項英文內容。");
+    $("manualTargets").focus();
+    return;
+  }
+
+  const note = makeNote(
+    null,
+    targets,
+    $("manualMemo").value.trim()
+  );
+
+  student().notes.push(note);
+
+  $("manualTargets").value = "";
+  $("manualMemo").value = "";
+
+  saveDB();
+  renderTeacher();
+  updateRecordSummary();
+  notify("已新增補充字詞，可到「⭐ 重溫」練習。");
+});
+
+$("exportCSV").addEventListener("click",exportCSV);
+
+$("exportJSON").addEventListener("click",() => {
+  downloadFile(
+    "MSP2-Dictation3-Backup.json",
+    JSON.stringify(db,null,2),
+    "application/json;charset=utf-8"
+  );
+
+  notify("已匯出全部學生的 JSON 備份，請妥善保存，勿公開上傳。");
+});
+
+$("importJSON").addEventListener("click",() => {
+  $("importFile").click();
+});
+
+$("importFile").addEventListener("change",async event => {
+  const file = event.target.files && event.target.files[0];
+  if(!file) return;
+
+  try{
+    if(file.size > 5 * 1024 * 1024){
+      throw new Error("檔案過大，請選擇 5 MB 以下的本教材備份。");
+    }
+
+    const imported = cleanDB(JSON.parse(await file.text()));
+
+    const confirmed = confirm(
+      "備份內有 " + imported.students.length + " 個學生代號。\n\n" +
+      "匯入會取代本教材目前的全部學生記錄。\n" +
+      "如需要保留現有記錄，請先取消並匯出 JSON。\n\n" +
+      "確定匯入？"
+    );
+
+    if(!confirmed) return;
+
+    stopSpeech("已匯入備份。");
+    db = imported;
+
+    $("rate").value = db.settings.rate;
+    $("autoWrong").checked = db.settings.autoWrong;
+
+    renderProfiles();
+    populateVoices();
+    saveDB();
+    renderPage();
+
+    notify("備份已匯入。請核對目前學生代號及老師記錄。");
+  }catch(error){
+    alert("未能匯入：" + error.message);
+  }finally{
+    event.target.value = "";
+  }
+});
+
+$("deleteStudent").addEventListener("click",() => {
+  const current = student();
+
+  if(!confirm(
+    "刪除「" + current.label + "」的所有本機作答及老師記錄？\n" +
+    "此操作不能在頁面內復原。建議先匯出 JSON 備份。"
+  )) return;
+
+  stopSpeech();
+
+  db.students = db.students.filter(s => s.id !== current.id);
+
+  if(!db.students.length){
+    db.students.push(newStudent("student-01"));
+  }
+
+  db.activeId = db.students[0].id;
+
+  saveDB();
+  renderProfiles();
+  renderPage();
+  notify("已刪除指定學生的本機記錄。");
+});
+
+document.addEventListener("keydown",event => {
+  if(event.key === "Escape" && speechActive){
+    stopSpeech();
+  }
+});
+
+document.addEventListener("visibilitychange",() => {
+  if(document.hidden && speechActive){
+    stopSpeech("頁面已轉到背景，播放已停止；返回後請重新播放。");
+  }
+});
+
+window.addEventListener("pagehide",() => {
+  stopSpeech(null);
+});
+
+/* =========================================================
+   10. 啟動
+   ========================================================= */
+
+$("rate").value = db.settings.rate;
+$("autoWrong").checked = db.settings.autoWrong;
+
+renderProfiles();
+populateVoices();
+renderPage();
+
+if(HAS_SPEECH){
+  synth.onvoiceschanged = populateVoices;
+  setTimeout(populateVoices,500);
+}else{
+  $("playStatus").textContent =
+    "此瀏覽器不支援語音朗讀；仍可輸入及核對答案。";
+}
+
+if(startupWarning){
+  $("storageWarning").textContent = startupWarning;
+  $("storageWarning").hidden = false;
+  $("saveStatus").textContent = "請先確認本機儲存狀態，並定期匯出備份。";
+}else{
+  saveDB();
+}
+</script>
+</body>
+</html>
